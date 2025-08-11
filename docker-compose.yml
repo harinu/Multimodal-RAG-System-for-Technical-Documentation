@@ -1,0 +1,51 @@
+version: '3.8'
+
+services:
+  # Backend service
+  backend:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile.backend
+    container_name: rag-backend
+    restart: unless-stopped
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./data:/app/data
+      - ./.env:/app/.env
+    environment:
+      - API_HOST=0.0.0.0
+      - API_PORT=8000
+      - CHROMA_DB_DIR=/app/data/vectors
+      - RAW_DOCUMENTS_DIR=/app/data/raw
+      - PROCESSED_DOCUMENTS_DIR=/app/data/processed
+    networks:
+      - rag-network
+
+  # Frontend service
+  frontend:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile.frontend
+    container_name: rag-frontend
+    restart: unless-stopped
+    ports:
+      - "3000:80"
+    depends_on:
+      - backend
+    networks:
+      - rag-network
+
+# Define network
+networks:
+  rag-network:
+    driver: bridge
+
+# Define volumes
+volumes:
+  data:
+    driver: local
+    driver_opts:
+      type: none
+      device: ${PWD}/data
+      o: bind
