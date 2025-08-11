@@ -36,7 +36,6 @@ The system follows a modular architecture with clear separation of concerns:
 - **Response Generation**: Integrates with LLMs to generate accurate answers
 - **Web Interface**: Provides a user-friendly frontend for interaction
 
-For more details, see [architecture.md](architecture.md).
 
 ## Tech Stack
 
